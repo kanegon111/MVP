@@ -66,80 +66,17 @@
         <canvas id="weeklyTotal"></canvas>
         <div class="small">直近7日：種目別</div>
         <canvas id="weeklyByEx"></canvas>
+        <div class="small">部位レベル：レーダー</div>
+        <canvas id="radarChart" class="radar"></canvas>
       </div>
     </section>
 
     <!-- 右：アバター＋ログ＋カレンダー -->
     <section class="card">
       <div class="avatar-wrap">
-        <svg id="avatar" viewBox="0 0 120 140" width="280" style="image-rendering: pixelated;">
-          <defs>
-            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.5" />
-            </filter>
-          </defs>
-          <!-- 影 -->
-          <rect x="10" y="126" width="100" height="6" fill="#000" opacity=".25" rx="3"/>
-
-          <!-- 左脚：太もも＋すね（膝関節） -->
-          <g id="legLUpper" transform="translate(50,96)">
-            <rect x="0" y="0" width="9" height="12" fill="#3e57c6" stroke="#2a3a82" stroke-width="1"/>
-            <g id="legLLower" transform="translate(0,12)">
-              <rect x="0" y="0" width="8" height="12" fill="#3e57c6" stroke="#2a3a82" stroke-width="1"/>
-              <rect x="-1" y="11" width="10" height="4" rx="1" fill="#2a2a3a" stroke="#1a1a2a" stroke-width="1"/>
-            </g>
-          </g>
-          <!-- 右脚：太もも＋すね（膝関節） -->
-          <g id="legRUpper" transform="translate(62,96)">
-            <rect x="0" y="0" width="9" height="12" fill="#3e57c6" stroke="#2a3a82" stroke-width="1"/>
-            <g id="legRLower" transform="translate(0,12)">
-              <rect x="0" y="0" width="8" height="12" fill="#3e57c6" stroke="#2a3a82" stroke-width="1"/>
-              <rect x="-1" y="11" width="10" height="4" rx="1" fill="#2a2a3a" stroke="#1a1a2a" stroke-width="1"/>
-            </g>
-          </g>
-
-          <!-- 上半身グループ（スクワット・懸垂で上下移動） -->
-          <g id="upperBody">
-            <!-- 腹部 -->
-            <g id="abs" transform="translate(49,80)">
-              <rect x="0" y="0" width="22" height="16" fill="#f2b494" stroke="#c49377" stroke-width="1"/>
-              <rect x="2" y="2" width="8" height="5" fill="#e59c7c" rx="1"/>
-              <rect x="12" y="2" width="8" height="5" fill="#e59c7c" rx="1"/>
-              <rect x="2" y="9" width="8" height="5" fill="#e59c7c" rx="1"/>
-              <rect x="12" y="9" width="8" height="5" fill="#e59c7c" rx="1"/>
-            </g>
-            <!-- 胴体（胸/背中） -->
-            <g id="torso" transform="translate(46,50)">
-              <rect x="0" y="0" width="28" height="30" fill="#f6c09b" stroke="#c49377" stroke-width="1"/>
-              <rect x="2" y="8" width="11" height="8" fill="#eaa889" rx="2"/>
-              <rect x="15" y="8" width="11" height="8" fill="#eaa889" rx="2"/>
-            </g>
-            <!-- 左腕：上腕＋前腕（肘関節） -->
-            <g id="armLUpper" transform="translate(38,52)">
-              <rect x="0" y="0" width="9" height="14" fill="#f6c09b" stroke="#c49377" stroke-width="1" rx="2"/>
-              <g id="armLFore" transform="translate(0,14)">
-                <rect x="1" y="0" width="8" height="12" fill="#f6c09b" stroke="#c49377" stroke-width="1" rx="2"/>
-                <rect x="1" y="11" width="7" height="5" fill="#f6c09b" stroke="#c49377" stroke-width="1" rx="1"/>
-              </g>
-            </g>
-            <!-- 右腕：上腕＋前腕（肘関節） -->
-            <g id="armRUpper" transform="translate(73,52)">
-              <rect x="0" y="0" width="9" height="14" fill="#f6c09b" stroke="#c49377" stroke-width="1" rx="2"/>
-              <g id="armRFore" transform="translate(0,14)">
-                <rect x="0" y="0" width="8" height="12" fill="#f6c09b" stroke="#c49377" stroke-width="1" rx="2"/>
-                <rect x="0" y="11" width="7" height="5" fill="#f6c09b" stroke="#c49377" stroke-width="1" rx="1"/>
-              </g>
-            </g>
-            <!-- 頭 -->
-            <g id="head" transform="translate(50,28)">
-              <rect x="-2" y="-4" width="24" height="6" fill="#2b2b38" rx="1"/>
-              <rect x="0" y="0" width="20" height="18" fill="#f6c09b" stroke="#c49377" stroke-width="1"/>
-              <rect x="4" y="6" width="4" height="3" fill="#3a2b2b" rx="1"/>
-              <rect x="12" y="6" width="4" height="3" fill="#3a2b2b" rx="1"/>
-              <rect x="7" y="12" width="6" height="2" fill="#c47b66" rx="1"/>
-            </g>
-          </g>
-        </svg>
+        <video id="avatar" muted playsinline preload="auto" width="100%" style="border-radius:8px; width:100%;">
+          <source src="example_video_smp_.mp4" type="video/mp4">
+        </video>
       </div>
 
       <div class="sep"></div>
