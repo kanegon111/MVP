@@ -50,6 +50,13 @@ function renderLog(state, logBody){
   logBody.innerHTML = state.log.map(r=>`<tr><td>${r.date}</td><td>${labelOf(r.exercise)}</td><td>${r.reps}</td></tr>`).join('');
 }
 
+function toLocalDateString(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
 function renderCalendar(state, dateInput, calendar){
   const now = dateInput.value ? new Date(dateInput.value) : new Date();
   const y = now.getFullYear();
@@ -57,7 +64,7 @@ function renderCalendar(state, dateInput, calendar){
   const first = new Date(y, m, 1);
   const startDow = (first.getDay()+7)%7; // 0:日
   const days = new Date(y, m+1, 0).getDate();
-  const todayStr = new Date().toISOString().slice(0,10);
+  const todayStr = toLocalDateString(new Date());
   const byDate = {};
   for(const r of state.log){ byDate[r.date] = (byDate[r.date]||0) + r.reps; }
   const header = ['日','月','火','水','木','金','土'].map(d=>`<div class="cell dow">${d}</div>`).join('');
@@ -72,10 +79,16 @@ function renderCalendar(state, dateInput, calendar){
 }
 
 function drawWeekly(state, dateInput, weeklyTotal, weeklyByEx){
-  const end = new Date(dateInput.value || new Date());
+  const end = dateInput.value ? new Date(dateInput.value + 'T00:00:00') : new Date();
   end.setHours(0,0,0,0);
   const dates=[]; const map={};
-  for(let i=6;i>=0;i--){ const d=new Date(end); d.setDate(end.getDate()-i); const ds=d.toISOString().slice(0,10); dates.push(ds); map[ds]={pushup:0,squat:0,situp:0,pullup:0}; }
+  for(let i=6;i>=0;i--){
+    const d = new Date(end);
+    d.setDate(end.getDate()-i);
+    const ds = toLocalDateString(d);
+    dates.push(ds);
+    map[ds] = {pushup:0,squat:0,situp:0,pullup:0};
+  }
   for(const r of state.log){ if(map[r.date]) map[r.date][r.exercise]+=r.reps; }
   const totals = dates.map(ds=>map[ds].pushup+map[ds].squat+map[ds].situp+map[ds].pullup);
   barChart(weeklyTotal, totals, dates);
@@ -170,14 +183,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 今日を初期値
-  refs.dateInput.valueAsDate = new Date();
+  // 今日を初期値（ローカル日付）
+  refs.dateInput.value = toLocalDateString(new Date());
 
   const rerenderAll = () => {
     renderTotals(state, refs.totalsPanel);
     renderLog(state, refs.logBody);
     renderCalendar(state, refs.dateInput, refs.calendar);
     drawWeekly(state, refs.dateInput, refs.weeklyTotal, refs.weeklyByEx);
+    radarChart(refs.radarCanvas, getPartLevels(state.totals), 4);
     applyHypertrophy(state.totals, refs);
   };
 
@@ -185,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 実行イベント
   refs.runBtn.addEventListener('click', async () => {
-    const date = refs.dateInput.value || new Date().toISOString().slice(0,10);
+    const date = refs.dateInput.value || toLocalDateString(new Date());
     const inputs = [
       ['pushup', Number(refs.pushupInput.value)||0],
       ['squat',  Number(refs.squatInput.value)||0],
@@ -212,9 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
       window.bgm.loop = true;
       if (window.bgm.paused) window.bgm.play();
     }
-    for (const [ex, reps] of seq) {
-      await playAnimation(ex, Math.min(reps, 50), refs);
+    const totalReps = seq.reduce((s, [, r]) => s + Math.min(r, 50), 0);
+    if (totalReps > 0) {
+      await playAnimation(totalReps, refs);
     }
+    if (seq.length > 0) resetAvatarPose(refs);
     if (window.bgm && seq.length > 0) {
       window.bgm.pause();
       window.bgm.currentTime = 0;
